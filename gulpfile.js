@@ -122,13 +122,13 @@ gulp.task('serve', () => {
 });
 
 gulp.task('serve:dist', ['default'], () => {
-  browserSync.init({
-    notify: false,
-    port: 9000,
-    server: {
-      baseDir: ['dist']
-    }
-  });
+  // browserSync.init({
+  //   notify: false,
+  //   port: 9000,
+  //   server: {
+  //     baseDir: ['dist']
+  //   }
+  // });
 });
 
 gulp.task('serve:test', ['scripts'], () => {
