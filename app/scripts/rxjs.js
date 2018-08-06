@@ -1,35 +1,69 @@
-// let source = Rx.Observable.fromEvent(document.body, 'click');
-//
-// // let example = source
-// //   .map(e => {
-// //     console.log(e);
-// //     return Rx.Observable.interval(1000).take(3);
-// //   })
-// //   .concatAll();
-//
-// let example = source
-//   .concatMap(e => Rx.Observable.interval(1000).take(3));
-//
-// example.subscribe((val) => {
-//   console.log(val);
-// });
+class Producer {
+  constructor() {
+    this.listeners = [];
+  }
 
-// var source = Rx.Observable.fromEvent(document.body, 'click');
-//
-// var example = source
-//   .map(e => Rx.Observable.interval(1000).take(3))
-//   .switch();
-//
-// example.subscribe((val) => {
-//   console.log(val);
-// });
+  addListener(listener) {
+    if (typeof listener === 'function') {
+      this.listeners.push(listener);
+    } else {
+      throw new Error('listener 必須是 function');
+    }
+  }
 
-var source = Rx.Observable.fromEvent(document.body, 'click');
+  removeListener(listener) {
+    this.listeners.splice(this.listeners.indexOf(listener), 1);
+  }
 
-var example = source
-  .map(e => Rx.Observable.interval(1000).take(3))
-  .mergeAll();
+  notify(message) {
+    this.listeners.forEach(listener => {
+      listener(message);
+    });
+  }
+}
 
-example.subscribe(val => {
-  console.log(val);
-});
+
+var egghead = new Producer();
+
+// new 出一個 Producer 實例叫 egghead
+
+function listener1(message) {
+  console.log(message + 'from listener1');
+}
+
+function listener2(message) {
+  console.log(message + 'from listener2');
+}
+
+egghead.addListener(listener1); // 註冊監聽
+egghead.addListener(listener2);
+
+egghead.notify('A new course!!'); // 當某件事情方法時，執行
+
+
+let arr = ['a', 'b', 'c'];
+let iter = arr[Symbol.iterator]();
+
+
+class Add {
+  @log
+  add(a, b) {
+    return a + b;
+  }
+}
+
+function log(target, name, descriptor) {
+  var oldValue = descriptor.value;
+
+  descriptor.value = function () {
+    console.log(`Calling ${name} with`, arguments);
+    return oldValue.apply(this, arguments);
+  };
+
+  return descriptor;
+}
+
+const math = new Add();
+
+// passed parameters should get logged now
+math.add(2, 4);
